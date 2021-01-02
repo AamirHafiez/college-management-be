@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema({
     userType: {
         type: String,
         required: true
-    }
+    },
+    assignmentsSubmitted: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Assignment'
+    }]
 },{
     timestamps: true
 });

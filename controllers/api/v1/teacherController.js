@@ -1,4 +1,5 @@
 const User = require('../../../models/user');
+const Assignment = require('../../../models/assignment');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -21,9 +22,9 @@ module.exports.createTeacher = async (req, res) => {
             'message': 'success'
         });
     } catch (error) {
+        console.log('error: ', error);
         return res.status(500).json({
             'message': 'internal server error',
-            'error': error
         });
     }
 }
@@ -48,13 +49,67 @@ module.exports.teacherLogin = async (req, res) => {
         return res.json({
             'message' : 'teacher authenticated',
             'data': {
-                'token': jwt.sign(teacher.toJSON(), 'collegeManagement', {expiresIn: '100000'})
+                'token': jwt.sign(teacher.toJSON(), 'collegeManagement', {expiresIn: 1000 * 60 * 60 * 24})
             }
         });
     } catch (error) {
+        console.log('error: ', error);
         return res.status(500).json({
             'message': 'internal server error',
-            'error': error
+        });
+    }
+}
+
+module.exports.updateTeacherDetails = async (req, res) => {
+    try {
+        if(req.body.password !== req.body.verify_password){
+            return res.json({
+                'message': 'password/verify password do not match'
+            });
+        }
+        if(req.body.password == ''){
+            req.body.password = req.user.password
+        }
+        if(req.body.email) {
+            return res.status(401).json({
+                'message': 'Server error'
+            });
+        }
+        await User.findByIdAndUpdate(req.user._id, req.body);
+        return res.json({
+            'message': 'updated successfully'
+        });
+    } catch (error) {
+        console.log('error: ', error);
+        return res.status(500).json({
+            'message': 'Server error'
+        });
+    }
+}
+
+module.exports.addAssignment = async (req, res) => {
+    let {
+        title,
+        description,
+        year,
+        deadline
+    } = req.body;
+
+    if(title === '' || description === '' || year === '' || deadline === ''){
+        return res.status(406).json({
+            'message': 'not acceptable'
+        });
+    }
+
+    try {
+        await Assignment.create(req.body);
+        return res.json({
+            'message': 'assignment added'
+        });   
+    } catch (error) {
+        console.log('error: ', error);
+        return res.status(500).json({
+            'message': 'internal server error',
         });
     }
 }

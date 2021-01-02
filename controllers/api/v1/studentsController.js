@@ -21,9 +21,9 @@ module.exports.createStudent = async (req, res) => {
             'message': 'success'
         });
     } catch (error) {
+        console.log('error: ', error);
         return res.status(500).json({
             'message': 'internal server error',
-            'error': error
         });
     }
 }
@@ -47,22 +47,15 @@ module.exports.studentLogin = async (req, res) => {
         return res.json({
             'message' : 'student authenticated',
             'data': {
-                'token': jwt.sign(student.toJSON(), 'collegeManagement', {expiresIn: '100000'})
+                'token': jwt.sign(student.toJSON(), 'collegeManagement', {expiresIn: 1000 * 60 * 60 * 24})
             }
         });
     } catch (error) {
+        console.log('error: ', error);
         return res.status(500).json({
             'message': 'internal server error',
-            'error': error
         });
     }
-}
-
-module.exports.getStudentDetails = (req, res) => {
-    return res.json({
-        'message': 'user data',
-        'data': req.user
-    });
 }
 
 module.exports.updateStudentDetails = async (req, res) => {
@@ -73,13 +66,21 @@ module.exports.updateStudentDetails = async (req, res) => {
             });
         }
         if(req.body.password == ''){
-            req.body.password = req.user
+            req.body.password = req.user.password
+        }
+        if(req.body.email) {
+            return res.status(401).json({
+                'message': 'Server error'
+            });
         }
         await User.findByIdAndUpdate(req.user._id, req.body);
         return res.json({
             'message': 'updated successfully'
         });
     } catch (error) {
-        console.log(error);
+        console.log('error: ', error);
+        return res.status(500).json({
+            'message': 'internal server error',
+        });
     }
 }

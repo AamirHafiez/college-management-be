@@ -2,17 +2,11 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-const studentsController = require('../../../controllers/api/v1/studentsController');
-const teachersController = require('../../../controllers/api/v1/teacherController');
+const usersController = require('../../../controllers/api/v1/usersController');
 
-router.post('/create-student', studentsController.createStudent);
-router.post('/student-login', studentsController.studentLogin);
+router.use('/student', require('./student'));
+router.use('/teacher', require('./teacher'));
 
-router.post('/create-teacher', teachersController.createTeacher);
-router.post('/teacher-login', teachersController.teacherLogin);
-
-router.get('/student-details', passport.authenticate('jwt', {session: false}), studentsController.getStudentDetails);
-
-router.post('/update-student-details',passport.authenticate('jwt', {session: false}), studentsController.updateStudentDetails);
+router.get('/user-details', passport.authenticate('jwt', {session: false}), usersController.getUserDetails);
 
 module.exports = router;
