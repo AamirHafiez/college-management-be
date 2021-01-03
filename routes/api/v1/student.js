@@ -7,5 +7,6 @@ const studentsController = require('../../../controllers/api/v1/studentsControll
 router.post('/create', studentsController.createStudent);
 router.post('/login', studentsController.studentLogin);
 router.post('/update-details',passport.authenticate('jwt', {session: false}), studentsController.updateStudentDetails);
+router.get('/upcoming-assignments', passport.authenticate('jwt', {session: false}), studentsController.getUpcomingAssignments);
 
 module.exports = router;

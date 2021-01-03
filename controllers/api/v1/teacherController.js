@@ -101,6 +101,8 @@ module.exports.addAssignment = async (req, res) => {
         });
     }
 
+    req.body['teacher'] = req.user._id;
+
     try {
         await Assignment.create(req.body);
         return res.json({

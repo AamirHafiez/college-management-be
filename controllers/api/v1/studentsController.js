@@ -1,4 +1,5 @@
 const User = require('../../../models/user');
+const Assignment = require('../../../models/assignment');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -76,6 +77,27 @@ module.exports.updateStudentDetails = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, req.body);
         return res.json({
             'message': 'updated successfully'
+        });
+    } catch (error) {
+        console.log('error: ', error);
+        return res.status(500).json({
+            'message': 'internal server error',
+        });
+    }
+}
+
+module.exports.getUpcomingAssignments = async (req, res) => {
+
+    try {
+        let assignments = await Assignment.find({year: req.user.year}).populate('teacher');
+        assignments.map((i) => {
+            i.teacher['password'] = '';
+            i.teacher['email'] = '';
+        });
+        console.log('assignments---------------------------', assignments)
+        return res.json({
+            message: 'Assignments',
+            assignments: assignments
         });
     } catch (error) {
         console.log('error: ', error);
