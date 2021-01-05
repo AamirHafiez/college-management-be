@@ -20,7 +20,11 @@ const assignmentSchema = new mongoose.Schema({
     deadline: {
         type: Date,
         required: true
-    }
+    },
+    submittedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     timestamps: true
 });
