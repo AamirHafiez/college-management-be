@@ -9,6 +9,7 @@ router.post('/login', studentsController.studentLogin);
 router.post('/update-details',passport.authenticate('jwt', {session: false}), studentsController.updateStudentDetails);
 router.get('/upcoming-assignments', passport.authenticate('jwt', {session: false}), studentsController.getUpcomingAssignments);
 router.post('/upload-assignment', passport.authenticate('jwt', {session: false}), studentsController.uploadAssignment);
-router.post('/add-student-to-assigment', passport.authenticate('jwt', {session: false}), studentsController.addStudentSubmittedAssignment)
+router.get('/get-submitted-assignments', passport.authenticate('jwt', {session: false}), studentsController.getSubmittedAssignments);
+
 
 module.exports = router;

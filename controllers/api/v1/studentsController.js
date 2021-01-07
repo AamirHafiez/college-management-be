@@ -88,16 +88,44 @@ module.exports.updateStudentDetails = async (req, res) => {
 }
 
 module.exports.getUpcomingAssignments = async (req, res) => {
-
     try {
         let assignments = await Assignment.find({year: req.user.year}).populate('teacher');
-        assignments.map((i) => {
-            i.teacher['password'] = '';
-            i.teacher['email'] = '';
+        let user = await User.findById(req.user._id).populate('assignmentsSubmitted');
+        let { assignmentsSubmitted } = user;
+        let indexesToDelete = [];
+        let assignmentIdsToDelete = {};
+
+        assignmentsSubmitted.map((assignment) => {
+            assignmentIdsToDelete[assignment._id] = true;
         });
+
+        let count = 0;
+
+        let todaysDate = new Date();
+        assignments.map((assignment) => {
+            if(assignmentIdsToDelete[assignment._id]){
+                indexesToDelete.push(count);
+            }
+            if(assignment.deadline <= todaysDate){
+                indexesToDelete.push(count);
+            }
+            count++;
+        });
+
+        indexesToDelete.map((index) => {
+            assignments.splice(index, 1, {});
+        });
+
+        let assignmentResponse = [];
+        assignments.map((i) => {
+            if(i._id){
+                assignmentResponse.push(i);
+            }           
+        });
+
         return res.json({
             message: 'Assignments',
-            assignments: assignments
+            assignments: assignmentResponse
         });
     } catch (error) {
         console.log('error: ', error);
@@ -116,9 +144,14 @@ module.exports.uploadAssignment = async (req, res) => {
             }
             if(req.file) {
                 user.assignmentsSubmittedPaths.push(path.join(__dirname + '/../../../uploads/users/files') + '/' + req.file.filename);
+                user.assignmentsSubmitted.push(req.headers.id);
             }
             user.save();
         });
+        let assignment = await Assignment.findById(req.headers.id);
+        assignment.submittedBy.push(req.user._id);
+        assignment.save();
+
         return res.json({
             'message': 'assignment uploaded'
         });
@@ -127,16 +160,22 @@ module.exports.uploadAssignment = async (req, res) => {
     }
 }
 
-module.exports.addStudentSubmittedAssignment = async (req, res) => {
+module.exports.getSubmittedAssignments = async (req, res) => {
     try {
-        let assignment = await Assignment.findById(req.body.id);
-        let user = await User.findById(req.user._id);
-        user.assignmentsSubmitted.push(req.body.id);
-        assignment.submittedBy.push(req.user._id);
-        assignment.save();
-        user.save();
+        let user = await User.findById(req.user._id).populate({
+            path: 'assignmentsSubmitted',
+            populate: {
+                path: 'teacher'
+            }
+        });
+        let assignmentsSubmitted = user.assignmentsSubmitted;
+        if(assignmentsSubmitted.length <= 0){
+            return res.json({
+                'assignmentsSubmitted': 'none'
+            });
+        }
         return res.json({
-            'message': 'assignment uploaded'
+            'assignmentsSubmitted': assignmentsSubmitted
         });
     } catch (error) {
         return res.status(500).json(error);

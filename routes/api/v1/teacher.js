@@ -9,5 +9,6 @@ router.post('/create', teachersController.createTeacher);
 router.post('/login', teachersController.teacherLogin);
 router.post('/update-details', passport.authenticate('jwt', {session: false}), teachersController.updateTeacherDetails);
 router.post('/add-assignment', passport.authenticate('jwt', {session: false}), teachersController.addAssignment);
+router.get('/get-assignments', passport.authenticate('jwt', {session: false}), teachersController.getAssignments);
 
 module.exports = router;

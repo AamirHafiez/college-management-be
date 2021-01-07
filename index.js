@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 require('./config/passport-jwt-strategy');
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.urlencoded());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 app.use('/', require('./routes'));
 

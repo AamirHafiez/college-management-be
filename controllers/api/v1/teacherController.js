@@ -115,3 +115,15 @@ module.exports.addAssignment = async (req, res) => {
         });
     }
 }
+
+module.exports.getAssignments = async (req, res) => {
+
+    try {
+        let assignments =await Assignment.find({teacher: req.user._id});
+        return res.json({
+            'assignments': assignments
+        });
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
