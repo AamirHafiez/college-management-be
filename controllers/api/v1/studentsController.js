@@ -1,5 +1,7 @@
 const User = require('../../../models/user');
 const Assignment = require('../../../models/assignment');
+const Grade = require('../../../models/grade');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -178,6 +180,28 @@ module.exports.getSubmittedAssignments = async (req, res) => {
             'assignmentsSubmitted': assignmentsSubmitted
         });
     } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+
+module.exports.getGrade = async (req, res) => {
+    try {
+        let grade = await Grade.find({
+            'student' : req.user._id,
+            'assignment': req.query.assignment
+        });
+    
+        if(grade.length === 1){
+            return res.json({
+                'grade': grade[0].grade
+            });
+        }else{
+            return res.json({
+                'grade': ''
+            });
+        }
+    } catch (error) {
+        console.log(error);
         return res.status(500).json(error);
     }
 }
