@@ -28,12 +28,12 @@ npm start
 The application runs on the port number 8000.
 
 # This app containes various apis having routes as follows:-
-1. createStudent: http://localhost:8000/api/v1/create-student,
-2. createTeacher: http://localhost:8000/api/v1/create-teacher,
-3. studentLogin: http://localhost:8000/api/v1/student-login,
-4. teacherLogin: http://localhost:8000/api/v1/teacher-login,
-5. getStudentDetails: http://localhost:8000/api/v1/student-details,
-6. updateStudentDetails: http://localhost:8000/api/v1/update-student-details,
+1. createStudent: http://localhost:8000/api/v1/student/create,
+2. createTeacher: http://localhost:8000/api/v1/teacher/create,
+3. studentLogin: http://localhost:8000/api/v1/student/login,
+4. teacherLogin: http://localhost:8000/api/v1/teacher/login,
+5. getUserDetails: http://localhost:8000/api/v1/user-details,
+6. updateStudentDetails: http://localhost:8000/api/v1/student/update-details,
 7. updateTeacherDetails: http://localhost:8000/api/v1/teacher/update-details,
 8. addAssignment: http://localhost:8000/api/v1/teacher/add-assignment,
 9. getUpcomingAssignments: http://localhost:8000/api/v1/student/upcoming-assignments,
