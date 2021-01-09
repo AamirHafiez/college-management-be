@@ -1,6 +1,6 @@
 # college-management-be
-This is the back end apis for the college management system.
-The front end for this appliaction can be found on the link:- https://github.com/AamirHafiez/college-management-fe
+* This is the back end apis for the college management system.
+* The front end for this appliaction can be found on the link:- https://github.com/AamirHafiez/college-management-fe
 
 ## About
 College management system is a web app that is used by the student and the teacher of a particular college to interact for the assignments. \
