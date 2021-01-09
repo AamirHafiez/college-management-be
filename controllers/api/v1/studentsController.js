@@ -21,7 +21,7 @@ module.exports.createStudent = async (req, res) => {
         req.body.password = hashedPassword;
         req.body['userType'] = 'student';
         await User.create(req.body);
-        return res.json(200, {
+        return res.json({
             'message': 'success'
         });
     } catch (error) {
@@ -140,17 +140,17 @@ module.exports.getUpcomingAssignments = async (req, res) => {
 module.exports.uploadAssignment = async (req, res) => {
     try {
         let user = await User.findById(req.user._id);
+        let assignment = await Assignment.findById(req.headers.id);
         User.uploadedFile(req, res, (error) => {
             if (error) {
                 return res.status(500).json(error);
             }
             if(req.file) {
-                user.assignmentsSubmittedPaths.push(path.join(__dirname + '/../../../uploads/users/files') + '/' + req.file.filename);
+                user.assignmentsSubmittedPaths.push(path.join(assignment._id + '/' + __dirname + '/../../../uploads/users/files') + '/' + req.file.filename);
                 user.assignmentsSubmitted.push(req.headers.id);
             }
             user.save();
         });
-        let assignment = await Assignment.findById(req.headers.id);
         assignment.submittedBy.push(req.user._id);
         assignment.save();
 

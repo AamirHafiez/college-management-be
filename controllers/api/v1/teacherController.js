@@ -4,6 +4,7 @@ const Grade = require('../../../models/grade');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 module.exports.createTeacher = async (req, res) => {
     try {
@@ -20,7 +21,7 @@ module.exports.createTeacher = async (req, res) => {
         req.body.password = hashedPassword;
         req.body['userType'] = 'teacher';
         await User.create(req.body);
-        return res.json(200, {
+        return res.json({
             'message': 'success'
         });
     } catch (error) {
@@ -184,6 +185,25 @@ module.exports.addGrade = async (req, res) => {
             'message': 'grade added'
         });
     } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+
+module.exports.downloadPDF = async (req, res) => {
+    try {
+        let user = await User.findById(req.query.student);
+        let assignmentsSubmittedPaths = user.assignmentsSubmittedPaths;
+        let fileName;
+        for(let i = 0; i < assignmentsSubmittedPaths.length; i++){
+            let slicedPaths = assignmentsSubmittedPaths[i].split('/');
+            if(assignmentsSubmittedPaths[i].split('/')[0] === req.query.assignment){
+                fileName = slicedPaths[slicedPaths.length - 1];
+            }
+        }
+        let filePath = path.join(__dirname, '../../../uploads/users/files/', fileName);
+        return res.download(filePath);
+    } catch (error) {
+        console.log('error', error);
         return res.status(500).json(error);
     }
 }

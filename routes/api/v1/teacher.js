@@ -12,5 +12,6 @@ router.post('/add-assignment', passport.authenticate('jwt', {session: false}), t
 router.get('/get-assignments', passport.authenticate('jwt', {session: false}), teachersController.getAssignments);
 router.get('/view-submissions', passport.authenticate('jwt', {session: false}), teachersController.viewSubmissions);
 router.post('/add-grade', passport.authenticate('jwt', {session: false}), teachersController.addGrade);
+router.get('/download', passport.authenticate('jwt', {session: false}), teachersController.downloadPDF);
 
 module.exports = router;
